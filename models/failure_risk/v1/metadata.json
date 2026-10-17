@@ -1,0 +1,59 @@
+{
+  "model_name": "failure_risk",
+  "version": "v1",
+  "trained_at": "2026-10-17T09:32:56.660404+00:00",
+  "features": [
+    "max_abs_z",
+    "mean_abs_z",
+    "max_roll_mean_5",
+    "max_roll_std_5",
+    "max_roll_slope_5",
+    "max_roll_mean_20",
+    "max_roll_std_20",
+    "max_roll_slope_20",
+    "max_dev_baseline",
+    "sensor_reading_std",
+    "flight_duration",
+    "flight_cycles",
+    "ambient_temp",
+    "load_factor",
+    "criticality",
+    "hours_since_maint",
+    "cycles_since_maint",
+    "fault_count_7d",
+    "fault_count_14d",
+    "fault_count_30d"
+  ],
+  "feature_count": 20,
+  "metrics": {
+    "model": {
+      "pr_auc": 0.1492,
+      "roc_auc": 0.8541,
+      "brier_score": 0.0098,
+      "recall_at_precision_50": 0.1253,
+      "recall_at_precision_70": 0.1224,
+      "sample_count": 248550,
+      "positive_count": 2475,
+      "prevalence": 0.01
+    },
+    "baseline": {
+      "pr_auc": 0.0471,
+      "roc_auc": 0.8139,
+      "brier_score": 0.5354,
+      "recall_at_precision_50": 0.0,
+      "recall_at_precision_70": 0.0,
+      "sample_count": 248550,
+      "positive_count": 2475,
+      "prevalence": 0.01
+    }
+  },
+  "data_hash": "2f6db33f71b8df88",
+  "python_version": "3.11.17",
+  "library_versions": {
+    "lightgbm": "4.7.0",
+    "scikit-learn": "1.9.1",
+    "shap": "0.51.0",
+    "pandas": "3.0.6",
+    "joblib": "1.6.0"
+  }
+}

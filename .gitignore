@@ -34,8 +34,8 @@ frontend/playwright-report/
 # Data & Models (generated artifacts)
 data/*
 !data/.gitkeep
-models/*
-!models/.gitkeep
+# models/ (pre-trained artifacts tracked for cloud deployment)
+models/*.tmp
 reports/*
 !reports/.gitkeep
 !reports/*.md
