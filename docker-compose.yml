@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: aeropulse-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: fleetmaint
+      POSTGRES_PASSWORD: fleetmaint
+      POSTGRES_DB: fleetmaint
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init_docker.sql:/docker-entrypoint-initdb.d/init_docker.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fleetmaint -d fleetmaint"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aeropulse-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://fleetmaint:fleetmaint@db:5432/fleetmaint
+      DATABASE_URL_TEST: postgresql+asyncpg://fleetmaint:fleetmaint@db:5432/fleetmaint_test
+      API_HOST: "0.0.0.0"
+      API_PORT: 8000
+      PORT: 8000
+      ENVIRONMENT: production
+      SECRET_KEY: dev_secret_key_fleetmaint_decision_support_phase0
+      CORS_ORIGINS: '["http://localhost:8000","http://127.0.0.1:8000","http://localhost:5173","http://127.0.0.1:5173"]'
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
