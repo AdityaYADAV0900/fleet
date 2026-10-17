@@ -28,16 +28,15 @@ services:
   - type: web
     name: aeropulse-frontend
     runtime: static
-    plan: free
     buildCommand: "cd frontend && npm install && npm run build"
     staticPublishPath: "frontend/dist"
     routes:
       - type: rewrite
         source: "/*"
         destination: "/index.html"
-      - type: rewrite
-        source: "/api/*"
-        destination: "https://aeropulse-backend.onrender.com/api/*"
     envVars:
       - key: VITE_API_BASE_URL
-        value: "/api/v1"
+        fromService:
+          type: web
+          name: aeropulse-backend
+          envVarKey: RENDER_EXTERNAL_URL

@@ -3,7 +3,19 @@
  * Typed HTTP client with token handling, baseUrl configuration, and error parsing.
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+function resolveApiBase(): string {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl) {
+    return '/api/v1';
+  }
+  let base = envUrl.trim().replace(/\/+$/, '');
+  if (!base.endsWith('/api/v1')) {
+    base = `${base}/api/v1`;
+  }
+  return base;
+}
+
+const API_BASE = resolveApiBase();
 
 export class ApiError extends Error {
   status: number;
