@@ -54,7 +54,22 @@ async def load_raw_data_async(as_of_date: date | None = None) -> RawFleetData:
     """
     settings = get_settings()
     dsn = settings.database_url.replace("+asyncpg", "").replace("+psycopg", "")
-    conn = await asyncpg.connect(dsn)
+    for param in [
+        "?pgbouncer=true",
+        "&pgbouncer=true",
+        "?sslmode=require",
+        "&sslmode=require",
+        "?sslmode=prefer",
+        "&sslmode=prefer",
+        "?ssl=require",
+        "&ssl=require",
+    ]:
+        dsn = dsn.replace(param, "")
+    if dsn.endswith("?"):
+        dsn = dsn[:-1]
+
+    ssl_mode = "require" if ("localhost" not in dsn and "127.0.0.1" not in dsn) else None
+    conn = await asyncpg.connect(dsn, ssl=ssl_mode)
 
     try:
         # 1. Flights

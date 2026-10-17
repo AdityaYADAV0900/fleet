@@ -18,13 +18,27 @@ async def generate_data_quality_report(
             "DATABASE_URL", "postgresql://fleetmaint:fleetmaint@localhost:5433/fleetmaint"
         )
     db_url = normalize_db_url(db_url)
+    for param in [
+        "?pgbouncer=true",
+        "&pgbouncer=true",
+        "?sslmode=require",
+        "&sslmode=require",
+        "?sslmode=prefer",
+        "&sslmode=prefer",
+        "?ssl=require",
+        "&ssl=require",
+    ]:
+        db_url = db_url.replace(param, "")
+    if db_url.endswith("?"):
+        db_url = db_url[:-1]
 
     if output_path is None:
         output_path = Path(__file__).resolve().parent.parent / "reports" / "data_quality.md"
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    conn = await asyncpg.connect(db_url)
+    ssl_mode = "require" if ("localhost" not in db_url and "127.0.0.1" not in db_url) else None
+    conn = await asyncpg.connect(db_url, ssl=ssl_mode)
 
     try:
         # 1. Table Row Counts

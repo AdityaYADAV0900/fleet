@@ -13,6 +13,19 @@ def normalize_db_url(url: str) -> str:
         url = url.replace("+asyncpg", "")
     if "+psycopg" in url:
         url = url.replace("+psycopg", "")
+    for param in [
+        "?pgbouncer=true",
+        "&pgbouncer=true",
+        "?sslmode=require",
+        "&sslmode=require",
+        "?sslmode=prefer",
+        "&sslmode=prefer",
+        "?ssl=require",
+        "&ssl=require",
+    ]:
+        url = url.replace(param, "")
+    if url.endswith("?"):
+        url = url[:-1]
     return url
 
 
@@ -23,8 +36,9 @@ async def bulk_load_to_db(dataset: FleetDataset, db_url: str | None = None) -> d
             "DATABASE_URL", "postgresql://fleetmaint:fleetmaint@localhost:5433/fleetmaint"
         )
     db_url = normalize_db_url(db_url)
+    ssl_mode = "require" if ("localhost" not in db_url and "127.0.0.1" not in db_url) else None
 
-    conn = await asyncpg.connect(db_url)
+    conn = await asyncpg.connect(db_url, ssl=ssl_mode)
     counts = {}
 
     try:
