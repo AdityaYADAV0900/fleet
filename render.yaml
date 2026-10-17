@@ -9,7 +9,7 @@ services:
     name: aeropulse-backend
     runtime: python
     plan: free
-    buildCommand: "pip install --no-cache-dir -r requirements.txt"
+    buildCommand: "pip install --upgrade pip setuptools wheel && pip install --no-cache-dir -r requirements.txt"
     startCommand: "python scripts/start_cloud.py"
     envVars:
       - key: PYTHON_VERSION
