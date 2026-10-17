@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: aeropulse-backend
+    runtime: python
+    buildCommand: "pip install --no-cache-dir -r requirements.txt"
+    startCommand: "alembic upgrade head && uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        value: aeropulse_secret_auth_jwt_key_2026_x99
+      - key: CORS_ORIGINS
+        value: '["*"]'

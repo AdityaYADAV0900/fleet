@@ -1,0 +1,50 @@
+# Simulation Configuration
+seed: 42
+
+fleet:
+  size: 40
+  tail_prefix: "AC-"
+  type_code: "Generic-Twin-Engine-Transport"
+  commissioned_start: "2020-01-15"
+  bases:
+    - "BASE-NORTH"
+    - "BASE-SOUTH"
+    - "BASE-EAST"
+    - "BASE-WEST"
+
+timeline:
+  start_date: "2023-01-01"
+  end_date: "2025-12-31"
+  live_demo_window_days: 60
+
+operations:
+  min_flights_per_day: 0.8
+  max_flights_per_day: 1.4
+  duration_min_hours: 1.0
+  duration_max_hours: 2.5
+  cycles_min: 1
+  cycles_max: 2
+  load_factor_min: 0.85
+  load_factor_max: 1.25
+  ambient_temp_mean_c: 20.0
+  ambient_temp_seasonal_amp_c: 15.0
+
+degradation:
+  gamma_shape: 2.0
+  gamma_scale: 0.00006
+  stress_weight: 0.35
+  sudden_failure_prob: 0.15
+  failure_threshold: 0.05
+  warning_threshold: 0.30
+
+noise:
+  dropout_rate: 0.025
+  stuck_rate: 0.010
+  drift_rate: 0.010
+  spike_rate: 0.005
+
+inventory:
+  locations:
+    - "BASE-MAIN"
+    - "DEPOT-01"
+  safety_stock_mult: 1.5

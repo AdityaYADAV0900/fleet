@@ -1,0 +1,25 @@
+# Advisory Rule Weights and Thresholds for Maintenance Prioritization
+# Formula (§4.D): priority_score = w1*risk + w2*criticality + w3*(1/RUL) + w4*spare_shortfall + w5*availability_impact
+
+weights:
+  w1_risk: 0.35                  # 14-day calibrated failure risk [0, 1]
+  w2_criticality: 0.20           # Normalized component criticality [0.2 to 1.0]
+  w3_rul_urgency: 0.25           # RUL urgency factor (normalized 1/RUL)
+  w4_spare_shortfall: 0.10       # Penalty if spare lead time exceeds RUL or stock == 0
+  w5_availability_impact: 0.10   # Relative downtime impact if run to failure
+
+thresholds:
+  p1_critical: 0.80              # Score >= 0.80 -> Priority P1 (Ground / Immediate)
+  p2_high: 0.45                  # Score >= 0.45 -> Priority P2 (Replace within 7-14 days)
+  p3_medium: 0.25                # Score >= 0.25 -> Priority P3 (Inspect / Plan soon)
+  p4_routine: 0.00               # Score < 0.25  -> Priority P4 (Monitor / Routine)
+
+actions:
+  critical_rul_days: 3.0         # <= 3 days RUL or risk >= 0.75 -> ground now
+  high_risk_threshold: 0.50      # >= 0.50 risk or RUL <= 7.0 -> replace within 7 days
+  medium_risk_threshold: 0.25    # >= 0.25 risk or RUL <= 14.0 -> schedule replacement within 14 days
+  watch_hi_threshold: 80.0       # HI < 80.0 or risk >= 0.10 -> inspect at next opportunity
+
+downtime_defaults:
+  scheduled_replacement_days: 2.5
+  run_to_failure_multiplier: 3.5  # Run-to-failure downtime is ~3.5x due to secondary damage & queueing

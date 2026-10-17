@@ -1,0 +1,49 @@
+# Python
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.eslintcache
+*.tsbuildinfo
+test-results/
+frontend/test-results/
+playwright-report/
+frontend/playwright-report/
+
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Data & Models (generated artifacts)
+data/*
+!data/.gitkeep
+models/*
+!models/.gitkeep
+reports/*
+!reports/.gitkeep
+!reports/*.md
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
