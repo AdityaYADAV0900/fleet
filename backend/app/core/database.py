@@ -26,7 +26,8 @@ def get_engine() -> AsyncEngine:
         connect_args = {}
         if "asyncpg" in db_url:
             connect_args["statement_cache_size"] = 0
-            if "localhost" not in db_url and "127.0.0.1" not in db_url:
+            is_local = any(h in db_url for h in ("localhost", "127.0.0.1", "@db:", "@db/", "@database:"))
+            if not is_local:
                 connect_args["ssl"] = "require"
 
         _engine = create_async_engine(

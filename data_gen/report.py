@@ -37,7 +37,8 @@ async def generate_data_quality_report(
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    ssl_mode = "require" if ("localhost" not in db_url and "127.0.0.1" not in db_url) else None
+    is_local = any(h in db_url for h in ("localhost", "127.0.0.1", "@db:", "@db/", "@database:"))
+    ssl_mode = None if is_local else "require"
     conn = await asyncpg.connect(db_url, ssl=ssl_mode)
 
     try:

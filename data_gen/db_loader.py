@@ -36,7 +36,8 @@ async def bulk_load_to_db(dataset: FleetDataset, db_url: str | None = None) -> d
             "DATABASE_URL", "postgresql://fleetmaint:fleetmaint@localhost:5433/fleetmaint"
         )
     db_url = normalize_db_url(db_url)
-    ssl_mode = "require" if ("localhost" not in db_url and "127.0.0.1" not in db_url) else None
+    is_local = any(h in db_url for h in ("localhost", "127.0.0.1", "@db:", "@db/", "@database:"))
+    ssl_mode = None if is_local else "require"
 
     conn = await asyncpg.connect(db_url, ssl=ssl_mode)
     counts = {}

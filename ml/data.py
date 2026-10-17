@@ -68,7 +68,8 @@ async def load_raw_data_async(as_of_date: date | None = None) -> RawFleetData:
     if dsn.endswith("?"):
         dsn = dsn[:-1]
 
-    ssl_mode = "require" if ("localhost" not in dsn and "127.0.0.1" not in dsn) else None
+    is_local = any(h in dsn for h in ("localhost", "127.0.0.1", "@db:", "@db/", "@database:"))
+    ssl_mode = None if is_local else "require"
     conn = await asyncpg.connect(dsn, ssl=ssl_mode)
 
     try:
