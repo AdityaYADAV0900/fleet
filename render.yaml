@@ -24,6 +24,10 @@ services:
         fromDatabase:
           name: aeropulse-db
           property: connectionString
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: SKIP_TRAIN
+        value: "true"
 
   - type: web
     name: aeropulse-frontend

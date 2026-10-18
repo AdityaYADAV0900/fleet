@@ -1,0 +1,38 @@
+# Lightweight synthetic data configuration for cloud free-tier deployments (Render, Fly, etc.)
+# Keeps RAM usage under 30MB and generation under 3 seconds.
+
+seed: 42
+
+fleet:
+  size: 6
+  tail_prefix: "AC-"
+  type_code: "Generic-Twin-Engine-Transport"
+  bases:
+    - "BASE-NORTH"
+    - "BASE-SOUTH"
+
+timeline:
+  start_date: 2025-06-01
+  end_date: 2025-12-31
+  live_demo_window_days: 30
+
+operations:
+  min_flights_per_day: 0.8
+  max_flights_per_day: 1.4
+  duration_min_hours: 1.0
+  duration_max_hours: 2.5
+  cycles_min: 1
+  cycles_max: 2
+
+degradation:
+  gamma_shape: 2.0
+  gamma_scale: 0.00010
+  stress_weight: 0.35
+  sudden_failure_prob: 0.20
+  failure_threshold: 0.05
+  warning_threshold: 0.30
+
+inventory:
+  locations:
+    - "BASE-MAIN"
+    - "DEPOT-01"

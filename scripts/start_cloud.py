@@ -19,7 +19,7 @@ BACKEND_DIR = ROOT_DIR / "backend"
 def background_seed_and_score(env: dict) -> None:
     """Run initial seeding and scoring in background without blocking server startup."""
     time.sleep(5)  # Let uvicorn bind and healthchecks respond first
-    print("\n[Background Init] Checking database state...")
+    print("\n[Background Init] Checking database state...", flush=True)
 
     # Check if data already exists to prevent duplicate execution
     check_query = (
@@ -44,25 +44,34 @@ def background_seed_and_score(env: dict) -> None:
             stderr=subprocess.DEVNULL,
         )
         if res.returncode == 0:
-            print("[Background Init] Database already contains fleet data. Skipping seeding.")
+            print("[Background Init] Database already contains fleet data. Skipping seeding.", flush=True)
         else:
-            print("[Background Init] Fresh database detected. Seeding synthetic data (seed 42)...")
+            cloud_cfg = ROOT_DIR / "data_gen" / "config_cloud.yaml"
+            gen_cmd = [sys.executable, "-m", "data_gen", "generate", "--seed", "42"]
+            if cloud_cfg.is_file():
+                print(f"[Background Init] Fresh database detected. Seeding with cloud-optimized profile ({cloud_cfg.name})...", flush=True)
+                gen_cmd.extend(["--config", str(cloud_cfg)])
+            else:
+                print("[Background Init] Fresh database detected. Seeding synthetic data (seed 42)...", flush=True)
+
             subprocess.run(
-                [sys.executable, "-m", "data_gen", "generate", "--seed", "42"],
+                gen_cmd,
                 cwd=str(ROOT_DIR),
                 env=env,
                 check=False,
             )
 
     # Run initial scoring run if needed
-    print("[Background Init] Running predictive scoring engine...")
-    subprocess.run(
-        [sys.executable, "-m", "app.engine.cli"],
-        cwd=str(ROOT_DIR),
-        env=env,
-        check=False,
-    )
-    print("[Background Init] Complete! All initial data and advisories ready.\n")
+    skip_score = os.environ.get("SKIP_SCORE", "false").lower() == "true"
+    if not skip_score:
+        print("[Background Init] Running predictive scoring engine...", flush=True)
+        subprocess.run(
+            [sys.executable, "-m", "app.engine.cli"],
+            cwd=str(ROOT_DIR),
+            env=env,
+            check=False,
+        )
+        print("[Background Init] Complete! All initial data and advisories ready.\n", flush=True)
 
 
 def main() -> None:
